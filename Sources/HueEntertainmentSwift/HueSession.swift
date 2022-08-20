@@ -15,14 +15,14 @@ enum HueError: Error {
 
 @available(iOS 13.0, *)
 public class HueSession: NSObject, URLSessionDelegate {
-  var ip: String?
-  var username: String?
-  var clientKey: String?
-  var appID: String?
+  public var ip: String?
+  public var username: String?
+  public var clientKey: String?
+  public var appID: String?
   var urlsession: URLSession!
-  var connection: NWConnection?
+  public var connection: NWConnection?
   var queue = DispatchQueue(label: "HueSessionQueue")
-  var area: HueEntertainmentArea?
+  public var area: HueEntertainmentArea?
 
   override public init() {
     super.init()
