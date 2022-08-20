@@ -24,7 +24,7 @@ public class HueSession: NSObject, URLSessionDelegate {
   var queue = DispatchQueue(label: "HueSessionQueue")
   var areaID: String?
 
-  override init() {
+  public override init() {
     super.init()
     self.urlsession = URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: nil)
   }
