@@ -133,9 +133,9 @@ public class HueSession: NSObject, URLSessionDelegate {
     return true
   }
 
-  func login() async throws {
+  func login(device: String) async throws {
     do {
-      let bridgeResponse: [BridgeKeyResponse]? = try await post("api", data: BridgeKeyRequest(devicetype: "wub#ios", generateclientkey: true))
+      let bridgeResponse: [BridgeKeyResponse]? = try await post("api", data: BridgeKeyRequest(devicetype: device, generateclientkey: true))
 
       guard let creds = bridgeResponse?.first else {
         throw HueError.requestError("NO CREDS")
