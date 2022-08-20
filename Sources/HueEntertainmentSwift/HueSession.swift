@@ -158,8 +158,5 @@ public class HueSession: NSObject, URLSessionDelegate {
       print("ERROR POST \(error)")
     }
   }
-
-  // MARK: http stuff
-
   
 }
