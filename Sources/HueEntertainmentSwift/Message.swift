@@ -9,9 +9,9 @@ import Foundation
 
 // Very basic message that will set all lights in the entertainment
 // area to the color passed (as a hex string, like "FF0000")
-struct Message {
+public struct Message {
   var area: HueEntertainmentArea
-  var color: String
+  var channelColors: [UInt8: String]
 
   var data: Data {
     var bytes: [UInt8] = []
@@ -39,12 +39,8 @@ struct Message {
     bytes.append(contentsOf: [0x00]) // channel ID 0
     bytes.append(contentsOf: [0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00]) // red
 
-    guard let channels = area.channels else {
-      return Data(bytes)
-    }
-
-    for case let channel? in channels {
-      let channelData = channelData(id: UInt8(channel.channel_id), color: self.color)
+    for (i, color) in self.channelColors {
+      let channelData = channelData(id: i, color: color)
       bytes.append(contentsOf: channelData)
     }
 

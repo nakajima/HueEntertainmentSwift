@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct HueBridgeResponse: Codable {
+public struct HueBridgeResponse: Codable {
   var id: String?
   var internalipaddress: String
   var port: Int
@@ -15,14 +15,12 @@ struct HueBridgeResponse: Codable {
   var name: String?
 }
 
-struct HueEntertainmentAreaResponse: Codable {
+public struct HueEntertainmentAreaResponse: Codable {
   let errors: [String]
   let data: [HueEntertainmentArea]
 }
 
-// MARK: - Welcome
-
-struct HueEntertainmentArea: Codable {
+public struct HueEntertainmentArea: Codable {
   let id: String
   let id_v1: String?
   let type: String?
@@ -32,16 +30,14 @@ struct HueEntertainmentArea: Codable {
   let status: String?
 }
 
-// MARK: - Channel
-
-struct HueEntertainmentAreaChannel: Codable {
-  let channel_id: Int
+public struct HueEntertainmentAreaChannel: Codable {
+  let channel_id: UInt8
   let position: HueEntertainmentAreaPosition?
 }
 
 // MARK: - Position
 
-struct HueEntertainmentAreaPosition: Codable {
+public struct HueEntertainmentAreaPosition: Codable {
   let x: Double?
   let y: Double?
   let z: Double?
@@ -49,11 +45,11 @@ struct HueEntertainmentAreaPosition: Codable {
 
 // MARK: - Metadata
 
-struct HueEntertainmentAreaMetadata: Codable {
+public struct HueEntertainmentAreaMetadata: Codable {
   let name: String?
 }
 
-struct HueBridgeCheck: Codable {
+public struct HueBridgeCheck: Codable {
   let name: String
   let swversion: String
   let apiversion: String
@@ -64,27 +60,27 @@ struct HueBridgeCheck: Codable {
   let modelid: String
 }
 
-struct BridgeKeyRequest: Codable {
+public struct BridgeKeyRequest: Codable {
   let devicetype: String
   let generateclientkey: Bool
 }
 
-struct BridgeKey: Codable {
+public struct BridgeKey: Codable {
   let username: String
   let clientkey: String
 }
 
-struct BridgeError: Codable {
+public struct BridgeError: Codable {
   let type: Int?
   let address: String?
   let description: String?
 }
 
-struct BridgeKeyResponse: Codable {
+public struct BridgeKeyResponse: Codable {
   let success: BridgeKey?
   let error: BridgeError?
 }
 
-struct BridgeAction: Codable {
+public struct BridgeAction: Codable {
   let action: String
 }

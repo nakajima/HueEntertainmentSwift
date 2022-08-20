@@ -22,18 +22,18 @@ public class HueSession: NSObject, URLSessionDelegate {
   var urlsession: URLSession!
   var connection: NWConnection?
   var queue = DispatchQueue(label: "HueSessionQueue")
-  var areaID: String?
+  var area: HueEntertainmentArea?
 
-  public override init() {
+  override public init() {
     super.init()
     self.urlsession = URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: nil)
   }
 
-  var isConnected: Bool {
+  public var isConnected: Bool {
     self.connection != nil
   }
 
-  func areas() async throws -> [HueEntertainmentArea] {
+  public func areas() async throws -> [HueEntertainmentArea] {
     guard let areaResponse: HueEntertainmentAreaResponse = try await get("clip/v2/resource/entertainment_configuration") else {
       throw HueError.requestError("Could not load areas")
     }
@@ -49,20 +49,20 @@ public class HueSession: NSObject, URLSessionDelegate {
     return areaResponse.data
   }
 
-  func start(areaID: String) async throws {
-    let _: BridgeKeyResponse? = try await put("clip/v2/resource/entertainment_configuration/\(areaID)", data: BridgeAction(action: "start"))
-    self.areaID = areaID
+  public func start(area: HueEntertainmentArea) async throws {
+    let _: BridgeKeyResponse? = try await put("clip/v2/resource/entertainment_configuration/\(area.id)", data: BridgeAction(action: "start"))
+    self.area = area
   }
 
-  func stop() async throws {
-    guard let areaID else {
-      throw HueError.connectionError("Cannot stop (no areaID)")
+  public func stop() async throws {
+    guard let area else {
+      throw HueError.connectionError("Cannot stop (no area set)")
     }
 
-    let _: BridgeKeyResponse? = try await put("clip/v2/resource/entertainment_configuration/\(areaID)", data: BridgeAction(action: "stop"))
+    let _: BridgeKeyResponse? = try await put("clip/v2/resource/entertainment_configuration/\(area.id)", data: BridgeAction(action: "stop"))
   }
 
-  func connect() async throws {
+  public func connect() throws {
     guard var ip = ip, var address = IPv4Address(ip), var clientKey = self.clientKey, var appID = self.appID, var username = self.username else {
       throw HueError.connectionError("Could not connect")
     }
@@ -102,7 +102,7 @@ public class HueSession: NSObject, URLSessionDelegate {
     self.connection = connection
   }
 
-  func findIP() async throws {
+  public func findIP() async throws {
     let url = URL(string: "https://discovery.meethue.com")!
     let (data, _) = try await urlsession.data(from: url)
     let bridgeResponse = try JSONDecoder().decode([HueBridgeResponse].self, from: data)
@@ -115,7 +115,7 @@ public class HueSession: NSObject, URLSessionDelegate {
     }
   }
 
-  func check() async throws -> Bool {
+  public func check() async throws -> Bool {
     guard let ip = ip else {
       return false
     }
@@ -133,7 +133,7 @@ public class HueSession: NSObject, URLSessionDelegate {
     return true
   }
 
-  func login(device: String) async throws {
+  public func login(device: String) async throws {
     do {
       let bridgeResponse: [BridgeKeyResponse]? = try await post("api", data: BridgeKeyRequest(devicetype: device, generateclientkey: true))
 
