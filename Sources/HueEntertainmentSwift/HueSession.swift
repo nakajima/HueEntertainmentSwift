@@ -8,11 +8,6 @@
 import Foundation
 import Network
 
-enum HueError: Error {
-  case requestError(String)
-  case connectionError(String)
-}
-
 @available(iOS 14.0, *)
 public class HueSession: NSObject, URLSessionDelegate {
   public var ip: String?

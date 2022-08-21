@@ -8,6 +8,13 @@
 import Foundation
 import Network
 
+public enum HueError: Error {
+  case requestError(String)
+  case connectionError(String)
+  case bridgeError(String)
+  case linkButtonNotPressedError
+}
+
 @available(iOS 14.0, *)
 public extension HueSession {
   func connect() throws {
@@ -83,28 +90,32 @@ public extension HueSession {
   }
 
   func login(device: String) async throws {
-    do {
-      let bridgeResponse: [BridgeKeyResponse]? = try await post("api", data: BridgeKeyRequest(devicetype: device, generateclientkey: true))
+    let bridgeResponse: [BridgeKeyResponse]? = try await post("api", data: BridgeKeyRequest(devicetype: device, generateclientkey: true))
 
-      guard let creds = bridgeResponse?.first else {
-        throw HueError.requestError("NO CREDS")
-      }
-
-      self.username = creds.success?.username
-      self.clientKey = creds.success?.clientkey
-
-      guard let username = self.username else {
-        throw HueError.requestError("NO USERNAME")
-      }
-
-      let (_, response) = try await makeRawRequest(method: "GET", path: "auth/v1") { request in
-        request.setValue(username, forHTTPHeaderField: "hue-application-key")
-      }
-
-      let res = response as! HTTPURLResponse
-      self.appID = res.value(forHTTPHeaderField: "hue-application-id")
-    } catch {
-      print("ERROR POST \(error)")
+    guard let creds = bridgeResponse?.first else {
+      throw HueError.requestError("NO CREDS")
     }
+
+    if let error = creds.error {
+      if error.description == "link button not pressed" {
+        throw HueError.linkButtonNotPressedError
+      } else {
+        throw HueError.bridgeError(error.description ?? "bridge error")
+      }
+    }
+
+    self.username = creds.success?.username
+    self.clientKey = creds.success?.clientkey
+
+    guard let username = self.username else {
+      throw HueError.requestError("NO USERNAME")
+    }
+
+    let (_, response) = try await makeRawRequest(method: "GET", path: "auth/v1") { request in
+      request.setValue(username, forHTTPHeaderField: "hue-application-key")
+    }
+
+    let res = response as! HTTPURLResponse
+    self.appID = res.value(forHTTPHeaderField: "hue-application-id")
   }
 }
