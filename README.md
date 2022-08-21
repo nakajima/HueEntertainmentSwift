@@ -6,7 +6,7 @@ Sort of (very) in flux at the moment.
 
 ## Usage
 
-Basic usage can be found in Tests/.
+[Basic usage](https://github.com/nakajima/HueEntertainmentSwift/blob/main/Tests/HueEntertainmentAPITests/HueEntertainmentAPITests.swift) can be found in Tests/ as the `testExample`.
 
 #### Warning
 
