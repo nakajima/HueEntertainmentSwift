@@ -9,15 +9,15 @@ import Foundation
 
 @available(iOS 14.0, *)
 extension HueSession {
-  @objc func fireTimer() {
-    if updates.isEmpty {
-      return
-    }
+	@objc func fireTimer() {
+		if updates.isEmpty {
+			return
+		}
 
-    for update in updates {
-      update.apply(self)
-    }
+		for update in updates {
+			update.apply(self)
+		}
 
-    updates.removeAll { $0.animation.isComplete }
-  }
+		updates.removeAll { $0.animation.isComplete }
+	}
 }

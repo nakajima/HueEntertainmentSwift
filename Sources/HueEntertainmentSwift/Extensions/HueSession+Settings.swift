@@ -9,9 +9,9 @@ import Foundation
 
 @available(iOS 14.0, *)
 public extension HueSession {
-  struct Settings {
-    public var forceFullBrightness: Bool = false
-  }
+	struct Settings {
+		public var forceFullBrightness: Bool = false
+	}
 
-  static var settings = Settings()
+	static var settings = Settings()
 }

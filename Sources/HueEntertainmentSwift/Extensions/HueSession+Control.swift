@@ -10,33 +10,33 @@ import SwiftUI
 
 @available(iOS 14.0, *)
 public extension HueSession {
-  func on(colors: [Color], ramp: Double = 0) {
-    guard let area, let channels = area.channels else {
-      return
-    }
+	func on(colors: [Color], ramp: Double = 0) {
+		guard let area, let channels = area.channels else {
+			return
+		}
 
-    let colors = colors.isEmpty ? [Color.white] : colors.shuffled()
+		let colors = colors.isEmpty ? [Color.white] : colors.shuffled()
 
-    var channelColors: [UInt8: Color] = [:]
-    for (i, channel) in channels.enumerated() {
-      channelColors[channel.channel_id] = colors[i % colors.count]
-    }
+		var channelColors: [UInt8: Color] = [:]
+		for (i, channel) in channels.enumerated() {
+			channelColors[channel.channel_id] = colors[i % colors.count]
+		}
 
-    let update = AreaUpdate(channelColors: channelColors, animation: Animation(startAt: Date(), duration: ramp))
-    self.updates.append(update)
-  }
+		let update = AreaUpdate(channelColors: channelColors, animation: Animation(startAt: Date(), duration: ramp))
+		updates.append(update)
+	}
 
-  func off() {
-    guard let area, let channels = area.channels, let connection else {
-      return
-    }
+	func off() {
+		guard let area, let channels = area.channels, let connection else {
+			return
+		}
 
-    var channelColors: [UInt8: Color] = [:]
-    for channel in channels {
-      channelColors[channel.channel_id] = Color.black
-    }
+		var channelColors: [UInt8: Color] = [:]
+		for channel in channels {
+			channelColors[channel.channel_id] = Color.black
+		}
 
-    let message = Message(area: area, channelColors: channelColors)
-    connection.send(content: message.data, completion: .idempotent)
-  }
+		let message = Message(area: area, channelColors: channelColors)
+		connection.send(content: message.data, completion: .idempotent)
+	}
 }
