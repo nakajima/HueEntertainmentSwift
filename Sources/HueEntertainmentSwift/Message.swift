@@ -6,12 +6,12 @@
 //
 
 import Foundation
+import SwiftUI
 
-// Very basic message that will set all lights in the entertainment
-// area to the color passed (as a hex string, like "FF0000")
+@available(iOS 14.0, *)
 public struct Message {
   var area: HueEntertainmentArea
-  var channelColors: [UInt8: String]
+  var channelColors: [UInt8: Color]
 
   var data: Data {
     var bytes: [UInt8] = []
@@ -44,11 +44,8 @@ public struct Message {
     return Data(bytes)
   }
 
-  func channelData(id: UInt8, color: String) -> [UInt8] {
-    let bytes = color.hexToBytes
-    guard let xyBrightness = toXYBrightness(red: Double(bytes[0]) / 255, green: Double(bytes[1]) / 255, blue: Double(bytes[2]) / 255) else {
-      return []
-    }
+  func channelData(id: UInt8, color: Color) -> [UInt8] {
+    let xyBrightness = XYBrightness(color: color)
 
     return [id] + xyBrightness.bytes
   }

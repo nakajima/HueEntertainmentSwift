@@ -6,17 +6,18 @@
 //
 
 import Foundation
+import SwiftUI
 
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 public extension HueSession {
-  func on(colors: [String]) {
+  func on(colors: [Color]) {
     guard let area, let channels = area.channels, let connection else {
       return
     }
 
-    var channelColors: [UInt8: String] = [:]
+    var channelColors: [UInt8: Color] = [:]
     for (i, channel) in channels.enumerated() {
-      channelColors[channel.channel_id] = colors.isEmpty ? "FFFFFF" : colors[i % colors.count]
+      channelColors[channel.channel_id] = colors.isEmpty ? Color.white : colors[i % colors.count]
     }
 
     let message = Message(area: area, channelColors: channelColors)
@@ -28,9 +29,9 @@ public extension HueSession {
       return
     }
 
-    var channelColors: [UInt8: String] = [:]
+    var channelColors: [UInt8: Color] = [:]
     for channel in channels {
-      channelColors[channel.channel_id] = "000000"
+      channelColors[channel.channel_id] = Color.black
     }
 
     let message = Message(area: area, channelColors: channelColors)

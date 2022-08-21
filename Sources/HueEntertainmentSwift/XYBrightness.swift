@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import SwiftUI
+import UIKit
 
 public struct XYBrightness {
   struct Gamut {
@@ -55,28 +57,25 @@ public struct XYBrightness {
   var y: Double = 0
   var brightness: Double = 0
 
-  init(red: Double, green: Double, blue: Double) {
-    let red = (red > 0.04045) ? pow((red + 0.055) / (1.0 + 0.055), 2.4) : (red / 12.92)
-    let green = (green > 0.04045) ? pow((green + 0.055) / (1.0 + 0.055), 2.4) : (green / 12.92)
-    let blue = (blue > 0.04045) ? pow((blue + 0.055) / (1.0 + 0.055), 2.4) : (blue / 12.92)
+  public init(red: Double, green: Double, blue: Double) {
+    self.setFrom(red: red, green: green, blue: blue)
+  }
 
-    let X = red * 0.649926 + green * 0.103455 + blue * 0.197109
-    let Y = red * 0.234327 + green * 0.743075 + blue * 0.022598
-    let Z = red * 0.0000000 + green * 0.053077 + blue * 1.035763
-
-    let x = X / (X + Y + Z)
-    let y = Y / (X + Y + Z)
-    self.brightness = Y
-
-    let calculatedPoint = CGPoint(x: x, y: y)
-    if self.checkPointInLampsReach(calculatedPoint) {
-      self.x = x
-      self.y = y
-    } else {
-      let point = self.getClosestPointToPoint(calculatedPoint)
-      self.x = point.x
-      self.y = point.y
+  public init(uiColor: UIColor) {
+    guard let components = uiColor.cgColor.components, components.count >= 3 else {
+      return
     }
+
+    let r = components[0]
+    let g = components[1]
+    let b = components[2]
+
+    setFrom(red: r, green: g, blue: b)
+  }
+
+  @available(iOS 14.0, *)
+  public init(color: Color) {
+    self.init(uiColor: UIColor(color))
   }
 
   var gamut: Gamut {
@@ -155,5 +154,30 @@ public struct XYBrightness {
     let dx = one.x - two.x
     let dy = one.y - two.y
     return sqrt(dx * dx + dy * dy)
+  }
+
+  // From https://github.com/PhilipsHue/PhilipsHueSDK-iOS-OSX/blob/00187a3db88dedd640f5ddfa8a474458dff4e1db/ApplicationDesignNotes/RGB%20to%20xy%20Color%20conversion.md
+  mutating func setFrom(red: Double, green: Double, blue: Double) {
+    let red = (red > 0.04045) ? pow((red + 0.055) / (1.0 + 0.055), 2.4) : (red / 12.92)
+    let green = (green > 0.04045) ? pow((green + 0.055) / (1.0 + 0.055), 2.4) : (green / 12.92)
+    let blue = (blue > 0.04045) ? pow((blue + 0.055) / (1.0 + 0.055), 2.4) : (blue / 12.92)
+
+    let X = red * 0.649926 + green * 0.103455 + blue * 0.197109
+    let Y = red * 0.234327 + green * 0.743075 + blue * 0.022598
+    let Z = red * 0.0000000 + green * 0.053077 + blue * 1.035763
+
+    let x = X / (X + Y + Z)
+    let y = Y / (X + Y + Z)
+    self.brightness = Y
+
+    let calculatedPoint = CGPoint(x: x, y: y)
+    if self.checkPointInLampsReach(calculatedPoint) {
+      self.x = x
+      self.y = y
+    } else {
+      let point = self.getClosestPointToPoint(calculatedPoint)
+      self.x = point.x
+      self.y = point.y
+    }
   }
 }
