@@ -86,7 +86,7 @@ public struct XYBrightness {
   var bytes: [UInt8] {
     var x = x.isNaN ? UInt16(0) : UInt16(x * 65535).byteSwapped
     var y = y.isNaN ? UInt16(0) : UInt16(y * 65535).byteSwapped
-    var brightness = brightness.isNaN ? UInt16(0) : UInt16(brightness * 65535)
+    var brightness = brightness.isNaN ? UInt16(0) : UInt16(65535)
 
     return withUnsafeBytes(of: &x, Array.init) + withUnsafeBytes(of: &y, Array.init) + withUnsafeBytes(of: &brightness, Array.init)
   }
