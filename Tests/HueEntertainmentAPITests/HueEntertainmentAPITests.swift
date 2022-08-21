@@ -6,6 +6,9 @@ import XCTest
 final class HueEntertainmentAPITests: XCTestCase {
 	func testExample() async throws {
 		let session = HueSession()
+
+		// When set to true, will disregard brightness calculation and always set colors
+		// to be their brightest.
 		HueSession.settings.forceFullBrightness = true
 
 		// You should save these credentials and set them manually on the HueSession so you don't
