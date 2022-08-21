@@ -28,34 +28,33 @@ public struct Message {
     // Reserved (write 0’s)
     bytes.append(contentsOf: [0x00, 0x00])
 
-    // color mode RGB
-    bytes.append(0x00)
+    // color mode xy brightness
+    bytes.append(0x01)
 
     // Reserved, write 0’s
     bytes.append(0x00)
 
     self.area.id.data(using: .utf8)!.withUnsafeBytes { bytes.append(contentsOf: $0) }
 
-    bytes.append(contentsOf: [0x00]) // channel ID 0
-    bytes.append(contentsOf: [0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00]) // red
-
     for (i, color) in self.channelColors {
       let channelData = channelData(id: i, color: color)
       bytes.append(contentsOf: channelData)
     }
 
-//    0x01, //channel ID 1
-//
-//    0x00, 0x00, 0x00, 0x00, 0xff, 0xff //blue
     return Data(bytes)
   }
 
   func channelData(id: UInt8, color: String) -> [UInt8] {
     let bytes = color.hexToBytes
-    return [id] + [
-      bytes[0], bytes[0],
-      bytes[1], bytes[1],
-      bytes[2], bytes[2],
-    ]
+    guard let xyBrightness = toXYBrightness(red: Double(bytes[0]) / 255, green: Double(bytes[1]) / 255, blue: Double(bytes[2]) / 255) else {
+      return []
+    }
+
+    return [id] + xyBrightness.bytes
+  }
+
+  // From https://gist.github.com/popcorn245/30afa0f98eea1c2fd34d
+  func toXYBrightness(red: Double, green: Double, blue: Double) -> XYBrightness? {
+    return XYBrightness(red: red, green: green, blue: blue)
   }
 }

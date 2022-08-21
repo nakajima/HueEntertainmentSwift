@@ -16,7 +16,7 @@ public extension HueSession {
 
     var channelColors: [UInt8: String] = [:]
     for (i, channel) in channels.enumerated() {
-      channelColors[channel.channel_id] = colors[i % colors.count]
+      channelColors[channel.channel_id] = colors.isEmpty ? "FFFFFF" : colors[i % colors.count]
     }
 
     let message = Message(area: area, channelColors: channelColors)
