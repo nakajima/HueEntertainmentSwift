@@ -169,7 +169,7 @@ public struct XYBrightness {
 
     let x = X / (X + Y + Z)
     let y = Y / (X + Y + Z)
-    self.brightness = HueSession.settings.forceFullBrightness ? 1.0 : Y
+    self.brightness = (HueSession.settings.forceFullBrightness && Y != 0) ? 1.0 : Y
 
     let calculatedPoint = CGPoint(x: x, y: y)
     if self.checkPointInLampsReach(calculatedPoint) {
