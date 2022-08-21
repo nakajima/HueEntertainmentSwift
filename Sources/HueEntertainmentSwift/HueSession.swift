@@ -59,6 +59,7 @@ public class HueSession: NSObject, URLSessionDelegate {
       throw HueError.connectionError("Cannot stop (no area set)")
     }
 
+    self.connection?.cancel()
     let _: BridgeKeyResponse? = try await put("clip/v2/resource/entertainment_configuration/\(area.id)", data: BridgeAction(action: "stop"))
   }
 
@@ -83,11 +84,12 @@ public class HueSession: NSObject, URLSessionDelegate {
 
     let connection = NWConnection(host: NWEndpoint.Host.ipv4(address), port: 2100, using: .init(dtls: options))
 
-    connection.stateUpdateHandler = { state in
+    connection.stateUpdateHandler = { [weak self] state in
       switch state {
       case .ready:
         print("READY")
-      case .cancelled: print("CANCELLED")
+      case .cancelled:
+        self?.connection = nil
       case let .failed(err): print("FAILED \(err.debugDescription)")
       case let .waiting(err): print("WAITING \(err.debugDescription)")
       case .setup: print("SETUP")
