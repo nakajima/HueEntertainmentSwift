@@ -10,6 +10,10 @@ import Foundation
 @available(iOS 14.0, *)
 extension HueSession {
   @objc func fireTimer() {
+    if updates.isEmpty {
+      return
+    }
+
     for update in updates {
       update.apply(self)
     }

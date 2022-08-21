@@ -11,7 +11,7 @@ import SwiftUI
 @available(iOS 14.0, *)
 public extension HueSession {
   func on(colors: [Color], ramp: Double = 0) {
-    guard let area, let channels = area.channels, let connection else {
+    guard let area, let channels = area.channels else {
       return
     }
 
@@ -22,7 +22,7 @@ public extension HueSession {
       channelColors[channel.channel_id] = colors[i % colors.count]
     }
 
-    let update = AreaUpdate(area: area, channelColors: channelColors, animation: Animation(startAt: Date(), duration: ramp))
+    let update = AreaUpdate(channelColors: channelColors, animation: Animation(startAt: Date(), duration: ramp))
     self.updates.append(update)
   }
 
