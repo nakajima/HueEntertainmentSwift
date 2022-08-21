@@ -15,9 +15,11 @@ public extension HueSession {
       return
     }
 
+    let colors = colors.isEmpty ? [Color.white] : colors.shuffled()
+
     var channelColors: [UInt8: Color] = [:]
     for (i, channel) in channels.enumerated() {
-      channelColors[channel.channel_id] = colors.isEmpty ? Color.white : colors[i % colors.count]
+      channelColors[channel.channel_id] = colors[i % colors.count]
     }
 
     let message = Message(area: area, channelColors: channelColors)
