@@ -7,7 +7,7 @@
 
 import Foundation
 
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 public extension HueSession {
   struct Settings {
     public var forceFullBrightness: Bool = false

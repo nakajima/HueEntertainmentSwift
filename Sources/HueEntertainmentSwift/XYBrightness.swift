@@ -57,12 +57,14 @@ public struct XYBrightness {
   var x: Double = 0
   var y: Double = 0
   var brightness: Double = 0
+  var forcedBrightness: Double?
 
-  public init(red: Double, green: Double, blue: Double) {
+  public init(red: Double, green: Double, blue: Double, forcedBrightness: Double? = nil) {
+    self.forcedBrightness = forcedBrightness
     self.setFrom(red: red, green: green, blue: blue)
   }
 
-  public init(uiColor: UIColor) {
+  public init(uiColor: UIColor, forcedBrightness: Double? = nil) {
     guard let components = uiColor.cgColor.components, components.count >= 3 else {
       return
     }
@@ -71,12 +73,14 @@ public struct XYBrightness {
     let g = components[1]
     let b = components[2]
 
-    setFrom(red: r, green: g, blue: b)
+    self.forcedBrightness = forcedBrightness
+
+    self.setFrom(red: r, green: g, blue: b)
   }
 
   @available(iOS 14.0, *)
-  public init(color: Color) {
-    self.init(uiColor: UIColor(color))
+  public init(color: Color, forcedBrightness: Double? = nil) {
+    self.init(uiColor: UIColor(color), forcedBrightness: forcedBrightness)
   }
 
   var gamut: Gamut {
@@ -169,7 +173,7 @@ public struct XYBrightness {
 
     let x = X / (X + Y + Z)
     let y = Y / (X + Y + Z)
-    self.brightness = (HueSession.settings.forceFullBrightness && Y != 0) ? 1.0 : Y
+    self.brightness = self.forcedBrightness ?? Y
 
     let calculatedPoint = CGPoint(x: x, y: y)
     if self.checkPointInLampsReach(calculatedPoint) {

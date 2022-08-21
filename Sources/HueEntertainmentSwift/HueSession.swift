@@ -13,20 +13,32 @@ enum HueError: Error {
   case connectionError(String)
 }
 
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 public class HueSession: NSObject, URLSessionDelegate {
   public var ip: String?
   public var username: String?
   public var clientKey: String?
   public var appID: String?
-  var urlsession: URLSession!
   public var connection: NWConnection?
-  var queue = DispatchQueue(label: "HueSessionQueue")
   public var area: HueEntertainmentArea?
+
+  var urlsession: URLSession!
+  var queue = DispatchQueue(label: "HueSessionQueue")
+  var updates: [AreaUpdate] = []
+  var timer: Timer?
 
   override public init() {
     super.init()
     self.urlsession = URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: nil)
+    self.initTimer()
+  }
+
+  func initTimer() {
+    DispatchQueue.main.async {
+      let timer = Timer(timeInterval: 1.0 / 25.0, target: self, selector: #selector(self.fireTimer), userInfo: nil, repeats: true)
+      RunLoop.current.add(timer, forMode: .common)
+      self.timer = timer
+    }
   }
 
   public var isConnected: Bool {

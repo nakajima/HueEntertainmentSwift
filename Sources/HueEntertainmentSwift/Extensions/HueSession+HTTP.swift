@@ -7,7 +7,7 @@
 
 import Foundation
 
-@available(iOS 13.0, *)
+@available(iOS 14.0, *)
 extension HueSession {
   func put<ReturnType: Codable>(_ path: String, data: Codable) async throws -> ReturnType? {
     return try await self.makeRequest(method: "PUT", path: path, data: data)

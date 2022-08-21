@@ -12,6 +12,7 @@ import SwiftUI
 public struct Message {
   var area: HueEntertainmentArea
   var channelColors: [UInt8: Color]
+  var forcedBrightness: Double?
 
   var data: Data {
     var bytes: [UInt8] = []
@@ -45,13 +46,8 @@ public struct Message {
   }
 
   func channelData(id: UInt8, color: Color) -> [UInt8] {
-    let xyBrightness = XYBrightness(color: color)
+    let xyBrightness = XYBrightness(color: color, forcedBrightness: forcedBrightness)
 
     return [id] + xyBrightness.bytes
-  }
-
-  // From https://gist.github.com/popcorn245/30afa0f98eea1c2fd34d
-  func toXYBrightness(red: Double, green: Double, blue: Double) -> XYBrightness? {
-    return XYBrightness(red: red, green: green, blue: blue)
   }
 }
