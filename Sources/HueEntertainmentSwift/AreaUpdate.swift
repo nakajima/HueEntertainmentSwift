@@ -1,5 +1,5 @@
 //
-//  ChannelUpdate.swift
+//  AreaUpdate.swift
 //
 //
 //  Created by Pat Nakajima on 8/21/22.
