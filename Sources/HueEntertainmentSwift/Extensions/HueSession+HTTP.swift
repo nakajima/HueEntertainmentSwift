@@ -9,15 +9,17 @@ import Foundation
 
 @available(iOS 14.0, *)
 extension HueSession {
-	func put<ReturnType: Codable>(_ path: String, data: Codable) async throws -> ReturnType? {
+	struct DummyCodable: Codable {}
+
+	func put<InputType: Codable, ReturnType: Codable>(_ path: String, data: InputType) async throws -> ReturnType? {
 		return try await makeRequest(method: "PUT", path: path, data: data)
 	}
 
 	func get<ReturnType: Codable>(_ path: String) async throws -> ReturnType? {
-		return try await makeRequest(method: "GET", path: path)
+		return try await makeRequest(method: "GET", path: path, data: DummyCodable?.none)
 	}
 
-	func post<ReturnType: Codable>(_ path: String, data: Codable) async throws -> ReturnType? {
+	func post<InputType: Codable, ReturnType: Codable>(_ path: String, data: InputType) async throws -> ReturnType? {
 		return try await makeRequest(method: "POST", path: path, data: data)
 	}
 
@@ -51,7 +53,7 @@ extension HueSession {
 		return try await urlsession.data(for: request)
 	}
 
-	private func makeRequest<ReturnType: Codable>(method: String, path: String, data: Codable? = nil) async throws -> ReturnType? {
+	private func makeRequest<InputType: Codable, ReturnType: Codable>(method: String, path: String, data: InputType? = nil) async throws -> ReturnType? {
 		let (responseData, _) = try await makeRawRequest(method: method, path: path) { request in
 			if let data = data {
 				let body = try JSONEncoder().encode(data)

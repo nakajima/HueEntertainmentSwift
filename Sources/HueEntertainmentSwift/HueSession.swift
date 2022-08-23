@@ -71,7 +71,7 @@ public class HueSession: NSObject, URLSessionDelegate {
 	}
 
 	public func stop() async throws {
-		guard let area else {
+		guard let area = area else {
 			throw HueError.connectionError("Cannot stop (no area set)")
 		}
 

@@ -6,12 +6,13 @@
 //
 
 import Foundation
+import Network
 import SwiftUI
 
 @available(iOS 14.0, *)
 public extension HueSession {
 	func on(colors: [Color], ramp: Double = 0) {
-		guard let area, let channels = area.channels else {
+		guard let area = area, let channels = area.channels else {
 			return
 		}
 
@@ -27,7 +28,7 @@ public extension HueSession {
 	}
 
 	func off() {
-		guard let area, let channels = area.channels, let connection else {
+		guard let area = area, let channels = area.channels, let connection = connection else {
 			return
 		}
 
