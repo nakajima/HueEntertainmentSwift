@@ -24,7 +24,7 @@ jobs:
     steps:
     - uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: '14.0.0'
+        xcode-version: '14.0.0 Beta'
     - uses: actions/checkout@v3
     - name: Set up Pages
       uses: actions/configure-pages@v1
