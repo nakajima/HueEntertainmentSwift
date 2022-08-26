@@ -17,6 +17,9 @@ public enum HueError: Error {
 
 @available(iOS 14.0, *)
 public extension HueSession {
+	/**
+	 Establishes a ``connection`` to the bridge and allows you to stream to it.
+	 */
 	func connect() throws {
 		guard var ip = ip, var address = IPv4Address(ip), var clientKey = self.clientKey, var appID = self.appID, var username = self.username else {
 			throw HueError.connectionError("Could not connect")
@@ -39,38 +42,43 @@ public extension HueSession {
 		let connection = NWConnection(host: NWEndpoint.Host.ipv4(address), port: 2100, using: .init(dtls: options))
 
 		connection.stateUpdateHandler = { [weak self] state in
+			guard let self = self else {
+				return
+			}
+
 			switch state {
 			case .ready:
-				print("READY")
+				self.connection = connection
 			case .cancelled:
-				self?.connection = nil
-			case let .failed(err): print("FAILED \(err.debugDescription)")
-			case let .waiting(err): print("WAITING \(err.debugDescription)")
-			case .setup: print("SETUP")
-			case .preparing:
-				print("PREPARING")
+				self.connection = nil
+			case let .failed(err): connection.cancel()
 			@unknown default:
 				print("??")
 			}
 		}
 
 		connection.start(queue: queue)
-		self.connection = connection
 	}
 
+	/**
+	 Finds the IP of your Hue bridge and sets ``ip`` on this session. It's best to save this value an set it on the session instead
+	 of calling this repeatedly, as you can run into rate-limiting issues.
+	 */
 	func findIP() async throws {
 		let url = URL(string: "https://discovery.meethue.com")!
 		let (data, _) = try await urlsession.data(from: url)
 		let bridgeResponse = try JSONDecoder().decode([HueBridgeResponse].self, from: data)
 
 		if let response = bridgeResponse.first {
-			print(String(describing: bridgeResponse))
 			ip = response.internalipaddress
 		} else {
-			print("NO BRIDGE FOUND")
+			throw HueError.bridgeError("No bridge found")
 		}
 	}
 
+	/**
+	 Helper to see if bridge is accessible.
+	 */
 	func check() async throws -> Bool {
 		guard let ip = ip else {
 			return false
@@ -79,16 +87,20 @@ public extension HueSession {
 		let url = URL(string: "https://\(ip)/api/0/config")!
 		do {
 			let (data, _) = try await urlsession.data(from: url)
-			let bridgeResponse = try JSONDecoder().decode(HueBridgeCheck.self, from: data)
-			print("CHECK \(bridgeResponse)")
+			_ = try JSONDecoder().decode(HueBridgeCheck.self, from: data)
 		} catch {
-			print("ERROR LOADING \(error)")
 			return false
 		}
 
 		return true
 	}
 
+	/**
+	 Sets ``username``, ``clientKey``, and ``appID`` properties for this session. It's best to save these values and set them on the session instead
+	 of calling ``login(device:)`` each time.
+
+	 > Important: This method requires the user to press the link button on their Hue bridge. If the link button has not been pressed, a ``linkButtonNotPressedError`` error will be thrown.
+	 */
 	func login(device: String) async throws {
 		let bridgeResponse: [BridgeKeyResponse]? = try await post("api", data: BridgeKeyRequest(devicetype: device, generateclientkey: true))
 

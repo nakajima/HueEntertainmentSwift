@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+/// A UDP message used by the hue entertainment API (v2).
 @available(iOS 14.0, *)
 public struct Message {
 	var area: HueEntertainmentArea

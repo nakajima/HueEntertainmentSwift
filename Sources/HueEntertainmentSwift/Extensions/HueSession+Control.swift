@@ -11,6 +11,13 @@ import SwiftUI
 
 @available(iOS 14.0, *)
 public extension HueSession {
+	/**
+	 Turns on lights.
+
+	 - Parameter colors: An array of ``SwiftUI.Color``s that will be randomly chosen for different lights in the entertainment area.
+	 - Parameter ramp: The amount of time (in seconds) it should take for the light to reach its brightness
+	 */
+
 	func on(colors: [Color], ramp: Double = 0) {
 		guard let area = area, let channels = area.channels else {
 			return
@@ -27,6 +34,7 @@ public extension HueSession {
 		updates.append(update)
 	}
 
+	/// Turns off lights in entertainment area.
 	func off() {
 		guard let area = area, let channels = area.channels, let connection = connection else {
 			return

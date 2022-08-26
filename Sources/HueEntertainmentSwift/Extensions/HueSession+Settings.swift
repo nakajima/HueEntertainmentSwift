@@ -10,6 +10,7 @@ import Foundation
 @available(iOS 14.0, *)
 public extension HueSession {
 	struct Settings {
+		/// Always force full brightness for lights instead of calculated values.
 		public var forceFullBrightness: Bool = false
 	}
 
