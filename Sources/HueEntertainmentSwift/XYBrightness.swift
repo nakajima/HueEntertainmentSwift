@@ -7,7 +7,10 @@
 
 import Foundation
 import SwiftUI
+
+#if canImport(UIKit)
 import UIKit
+#endif
 
 /// Handles coversions from Swift ``UIColor`` and ``SwiftUI.Color`` to the XY system used by Hue.
 @available(iOS 13.0, *)
