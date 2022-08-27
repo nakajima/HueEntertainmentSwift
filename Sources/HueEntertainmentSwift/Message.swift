@@ -15,7 +15,9 @@ public struct Message {
 	var channelColors: [UInt8: Color]
 	var forcedBrightness: Double?
 
-	var data: Data {
+	/// Returns data suitable for sending over UDP to the bridge via `session.connection`. If you
+	/// don't want to use `session.on(colors:, ramp:)`, you can create a message manually.
+	public var data: Data {
 		var bytes: [UInt8] = []
 
 		// Protocol

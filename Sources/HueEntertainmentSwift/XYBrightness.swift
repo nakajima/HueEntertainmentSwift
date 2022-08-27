@@ -9,13 +9,14 @@ import Foundation
 import SwiftUI
 
 #if canImport(UIKit)
-import UIKit
+	import UIKit
 #endif
 
 /// Handles coversions from Swift ``UIColor`` and ``SwiftUI.Color`` to the XY system used by Hue.
 @available(iOS 13.0, *)
 public struct XYBrightness {
-	struct Gamut {
+	/// Determines what set of colors are available, depending on what devices you have
+	public struct Gamut {
 		var points: [CGPoint]
 
 		var red: CGPoint {
@@ -32,45 +33,53 @@ public struct XYBrightness {
 	}
 
 	/// LivingColors Iris, Bloom, Aura, LightStrips
-	let GamutA = Gamut(points: [
+	public let GamutA = Gamut(points: [
 		CGPoint(x: 0.704, y: 0.296),
 		CGPoint(x: 0.2151, y: 0.7106),
 		CGPoint(x: 0.138, y: 0.08),
 	])
 
 	/// Hue A19 bulbs
-	let GamutB = Gamut(points: [
+	public let GamutB = Gamut(points: [
 		CGPoint(x: 0.675, y: 0.322),
 		CGPoint(x: 0.4091, y: 0.518),
 		CGPoint(x: 0.167, y: 0.04),
 	])
 
 	/// Hue BR30, A19 (Gen 3), Hue Go, LightStrips plus
-	let GamutC = Gamut(points: [
+	public let GamutC = Gamut(points: [
 		CGPoint(x: 0.692, y: 0.308),
 		CGPoint(x: 0.17, y: 0.7),
 		CGPoint(x: 0.153, y: 0.048),
 	])
 
 	/// Default
-	let GamutD = Gamut(points: [
+	public let GamutD = Gamut(points: [
 		CGPoint(x: 1.0, y: 0),
 		CGPoint(x: 0.0, y: 1.0),
 		CGPoint(x: 0.0, y: 0.0),
 	])
 
-	var x: Double = 0
-	var y: Double = 0
-	var brightness: Double = 0
+	public var x: Double = 0
+	public var y: Double = 0
+	public var brightness: Double = 0
 	/// When set, will disregard calculated brightness and use this value instead (0.0 - 1.0)
-	var forcedBrightness: Double?
+	public var forcedBrightness: Double?
+
+	/// You can set which gamut you want to use for calculations, depending on which devices you have.
+	public var gamut: Gamut
 
 	public init(red: Double, green: Double, blue: Double, forcedBrightness: Double? = nil) {
 		self.forcedBrightness = forcedBrightness
+		self.gamut = GamutC
+
 		setFrom(red: red, green: green, blue: blue)
 	}
 
+	@available(iOS 14, *)
 	public init(uiColor: UIColor, forcedBrightness: Double? = nil) {
+		self.gamut = GamutC
+
 		guard let components = uiColor.cgColor.components, components.count >= 3 else {
 			return
 		}
@@ -87,10 +96,6 @@ public struct XYBrightness {
 	@available(iOS 14.0, *)
 	public init(color: Color, forcedBrightness: Double? = nil) {
 		self.init(uiColor: UIColor(color), forcedBrightness: forcedBrightness)
-	}
-
-	var gamut: Gamut {
-		return GamutC
 	}
 
 	/// Returns bytes suitable for use in Hue Entertainment API messages
