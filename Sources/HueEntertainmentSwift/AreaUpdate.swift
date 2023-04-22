@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 @available(iOS 14.0, *)
-struct AreaUpdate {
+public struct AreaUpdate {
 	var channelColors: [UInt8: Color]
 	var animation: Animation
 
