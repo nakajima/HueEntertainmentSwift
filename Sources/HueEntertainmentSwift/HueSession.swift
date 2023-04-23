@@ -47,10 +47,10 @@ public class HueSession: NSObject, URLSessionDelegate {
 	/// The entertainment area (configured in the Hue app) to be controlled
 	public var area: HueEntertainmentArea?
 
-	var urlsession: URLSession!
-	var queue = DispatchQueue(label: "HueSessionQueue")
-	var updates: [AreaUpdate] = []
-	var timer: Timer?
+	public var urlsession: URLSession!
+	public var queue = DispatchQueue(label: "HueSessionQueue")
+	public var updates: [AreaUpdate] = []
+	public var timer: Timer?
 
 	override public init() {
 		super.init()
