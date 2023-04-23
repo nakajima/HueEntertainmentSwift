@@ -11,15 +11,15 @@ import Foundation
 extension HueSession {
 	struct DummyCodable: Codable {}
 
-	func put<InputType: Codable, ReturnType: Codable>(_ path: String, data: InputType) async throws -> ReturnType? {
+	public func put<InputType: Codable, ReturnType: Codable>(_ path: String, data: InputType) async throws -> ReturnType? {
 		return try await makeRequest(method: "PUT", path: path, data: data)
 	}
 
-	func get<ReturnType: Codable>(_ path: String) async throws -> ReturnType? {
+	public func get<ReturnType: Codable>(_ path: String) async throws -> ReturnType? {
 		return try await makeRequest(method: "GET", path: path, data: DummyCodable?.none)
 	}
 
-	func post<InputType: Codable, ReturnType: Codable>(_ path: String, data: InputType) async throws -> ReturnType? {
+	public func post<InputType: Codable, ReturnType: Codable>(_ path: String, data: InputType) async throws -> ReturnType? {
 		return try await makeRequest(method: "POST", path: path, data: data)
 	}
 
