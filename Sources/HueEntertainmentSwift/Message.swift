@@ -14,6 +14,8 @@ public struct Message {
 	public var area: HueEntertainmentArea
 	public var channelColors: [UInt8: Color]
 	public var forcedBrightness: Double?
+	
+	public init() {}
 
 	/// Returns data suitable for sending over UDP to the bridge via `session.connection`. If you
 	/// don't want to use `session.on(colors:, ramp:)`, you can create a message manually.
