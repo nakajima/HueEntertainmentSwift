@@ -49,7 +49,7 @@ public extension HueSession {
 			channelColors[channel.channel_id] = .black
 		}
 
-		let message = Message(area: area, channelColors: channelColors)
+		let message = Message(area: area, channelColors: channelColors, forcedBrightness: 0.1)
 
 		print("OFF MESSAGE")
 		print([UInt8](message.data).debugDescription)
