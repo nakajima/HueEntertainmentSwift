@@ -81,8 +81,10 @@ public struct Message {
 
 		area.id.data(using: .utf8)!.withUnsafeBytes { bytes.append(contentsOf: $0) }
 
-		for (i, _) in channelColors {
-			bytes.append(contentsOf: [i] + [0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
+		for (i, color) in channelColors {
+			var xyBrightness = XYBrightness(color: color, forcedBrightness: forcedBrightness)
+			xyBrightness.brightness = 0
+			bytes.append(contentsOf: [i] + xyBrightness.bytes)
 		}
 
 		self.data = Data(bytes)
