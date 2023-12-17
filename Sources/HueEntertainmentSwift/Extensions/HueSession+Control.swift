@@ -42,6 +42,12 @@ public extension HueSession {
 
 		var message = Message.off(area: area)
 		message.off()
-		connection.send(content: message.data, completion: .idempotent)
+		connection.send(content: message.data, completion: .contentProcessed({ error in
+			if let error {
+				print("error: \(error.localizedDescription)")
+			} else {
+				print("no error")
+			}
+		}))
 	}
 }
