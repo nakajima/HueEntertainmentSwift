@@ -33,22 +33,26 @@ public extension HueSession {
 		let message = Message(area: area, channelColors: channelColors)
 
 		print("ON MESSAGE")
-		print(message.data.debugDescription)
+		print([UInt8](message.data).debugDescription)
 
 		connection.send(content: message.data, completion: .idempotent)
 	}
 
 	/// Turns off lights in entertainment area.
 	func off() {
-		guard let area, let connection else {
+		guard let area, let connection, let channels = area.channels else {
 			return
 		}
 
-		var message = Message.off(area: area)
-		message.off()
+		var channelColors: [UInt8: Color] = [:]
+		for channel in channels {
+			channelColors[channel.channel_id] = .black
+		}
+
+		let message = Message(area: area, channelColors: channelColors)
 
 		print("OFF MESSAGE")
-		print(message.data.debugDescription)
+		print([UInt8](message.data).debugDescription)
 
 		connection.send(content: message.data, completion: .idempotent)
 	}
