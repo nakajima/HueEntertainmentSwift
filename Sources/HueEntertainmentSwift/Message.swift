@@ -74,7 +74,7 @@ public struct Message {
 		bytes.append(contentsOf: [0x00, 0x00])
 
 		// color mode rgb brightness
-		bytes.append(0x00)
+		bytes.append(0x01)
 
 		// Reserved, write 0’s
 		bytes.append(0x00)
@@ -82,7 +82,7 @@ public struct Message {
 		area.id.data(using: .utf8)!.withUnsafeBytes { bytes.append(contentsOf: $0) }
 
 		for (i, _) in channelColors {
-			bytes.append(contentsOf: [0, i] + [0, 0, 0, 0, 0, 0])
+			bytes.append(contentsOf: [i] + [0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
 		}
 
 		self.data = Data(bytes)
