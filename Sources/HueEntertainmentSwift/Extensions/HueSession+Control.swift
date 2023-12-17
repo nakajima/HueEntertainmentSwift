@@ -42,10 +42,10 @@ public extension HueSession {
 
 		var channelColors: [UInt8: Color] = [:]
 		for channel in channels {
-			channelColors[channel.channel_id] = Color.black
+			channelColors[channel.channel_id] = Color.clear
 		}
 
-		let message = Message(area: area, channelColors: channelColors, forcedBrightness: 1.0)
+		let message = Message(area: area, channelColors: channelColors, forcedBrightness: 0.0)
 		connection.send(content: message.data, completion: .idempotent)
 	}
 }
