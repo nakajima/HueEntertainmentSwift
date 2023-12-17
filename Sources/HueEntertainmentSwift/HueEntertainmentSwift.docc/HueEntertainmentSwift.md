@@ -19,7 +19,7 @@ try await session.login(device: "YOURAPP#HERE")
 let areas = try await session.areas()
 
 // Get an area to stream to
-guard let area = areas.first else {	return }
+guard let area = areas.first else { return }
 
 // Start a streaming session for the area. This prevents other integrations
 // from streaming as well.
