@@ -19,7 +19,7 @@ public extension HueSession {
 	 */
 
 	func on(colors: [Color], ramp: Double = 0) {
-		guard let area = area, let channels = area.channels else {
+		guard let area = area, let channels = area.channels, let connection else {
 			return
 		}
 
@@ -30,22 +30,18 @@ public extension HueSession {
 			channelColors[channel.channel_id] = colors[i % colors.count]
 		}
 
-		let update = AreaUpdate(channelColors: channelColors, animation: Animation(startAt: Date(), duration: ramp))
-		updates.append(update)
+		let message = Message(area: area, channelColors: channelColors)
+		connection.send(content: message.data, completion: .idempotent)
 	}
 
 	/// Turns off lights in entertainment area.
 	func off() {
-		guard let area, let channels = area.channels else {
+		guard let area, let connection else {
 			return
 		}
 
-		var channelColors: [UInt8: Color] = [:]
-		for (_, channel) in channels.enumerated() {
-			channelColors[channel.channel_id] = .black
-		}
-
-		let update = AreaUpdate(channelColors: channelColors, animation: Animation(startAt: Date(), duration: 0.0))
-		updates.append(update)
+		var message = Message.off(area: area)
+		message.off()
+		connection.send(content: message.data, completion: .idempotent)
 	}
 }
