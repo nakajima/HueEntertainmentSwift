@@ -82,7 +82,7 @@ public struct Message {
 		area.id.data(using: .utf8)!.withUnsafeBytes { bytes.append(contentsOf: $0) }
 
 		for (i, _) in channelColors {
-			bytes.append(contentsOf: [i] + [0,0, 0,0, 0,0])
+			bytes.append(contentsOf: [i] + [1, 1, 1])
 		}
 
 		self.data = Data(bytes)
