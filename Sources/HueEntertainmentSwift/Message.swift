@@ -74,7 +74,7 @@ public struct Message {
 		bytes.append(contentsOf: [0x00, 0x00])
 
 		// color mode xy brightness
-		bytes.append(0x00)
+		bytes.append(0x01)
 
 		// Reserved, write 0’s
 		bytes.append(0x00)
