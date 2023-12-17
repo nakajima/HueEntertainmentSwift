@@ -45,7 +45,8 @@ public extension HueSession {
 			channelColors[channel.channel_id] = Color.clear
 		}
 
-		let message = Message.off(area: area)
+		var message = Message.off(area: area)
+		message.off()
 		connection.send(content: message.data, completion: .idempotent)
 	}
 }
