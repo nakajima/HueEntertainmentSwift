@@ -36,18 +36,16 @@ public extension HueSession {
 
 	/// Turns off lights in entertainment area.
 	func off() {
-		guard let area, let connection else {
+		guard let area, let channels = area.channels else {
 			return
 		}
 
-		var message = Message.off(area: area)
-		message.off()
-		connection.send(content: message.data, completion: .contentProcessed({ error in
-			if let error {
-				print("error: \(error.localizedDescription)")
-			} else {
-				print("no error")
-			}
-		}))
+		var channelColors: [UInt8: Color] = [:]
+		for (_, channel) in channels.enumerated() {
+			channelColors[channel.channel_id] = .black
+		}
+
+		let update = AreaUpdate(channelColors: channelColors, animation: Animation(startAt: Date(), duration: 0.0))
+		updates.append(update)
 	}
 }
