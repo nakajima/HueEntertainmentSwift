@@ -31,6 +31,10 @@ public extension HueSession {
 		}
 
 		let message = Message(area: area, channelColors: channelColors)
+
+		print("ON MESSAGE")
+		print(message.data.debugDescription)
+
 		connection.send(content: message.data, completion: .idempotent)
 	}
 
@@ -44,6 +48,10 @@ public extension HueSession {
 
 		var message = Message.off(area: area)
 		message.off()
+
+		print("OFF MESSAGE")
+		print(message.data.debugDescription)
+
 		connection.send(content: message.data, completion: .idempotent)
 	}
 }
