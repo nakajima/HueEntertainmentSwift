@@ -40,6 +40,8 @@ public extension HueSession {
 			return
 		}
 
+		print("TURNING OFF")
+
 		var message = Message.off(area: area)
 		message.off()
 		connection.send(content: message.data, completion: .idempotent)
