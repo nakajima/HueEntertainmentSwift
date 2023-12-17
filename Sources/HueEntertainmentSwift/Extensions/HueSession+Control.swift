@@ -41,7 +41,6 @@ public extension HueSession {
 		}
 
 		var message = Message.off(area: area)
-		message.off()
 		connection.send(content: message.data, completion: .idempotent)
 	}
 }
